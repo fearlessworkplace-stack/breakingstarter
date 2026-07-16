@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Breaking the Loop, Starter Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --off-white:#F5F7FB; --white:#FFFFFF; --paper:#FBFCFE;
+  --navy:#002147; --teal:#2F6E83; --tealL:#4E93AB; --tealPale:#E4EEF1;
+  --copper:#C76A2E; --copperPale:#F7E9DD;
+  --slate:#5E6670; --line:rgba(0,33,71,.12); --ink:#12202E;
+  --font-display:'Anton',sans-serif; --font-body:'DM Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);color:var(--ink);background:var(--off-white);line-height:1.6}
+.wrap{max-width:640px;margin:0 auto;padding:0 20px 60px}
+
+.hero{background:var(--navy);padding:44px 20px 40px;text-align:center;color:var(--off-white)}
+.hero-eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--tealL);font-weight:700;margin-bottom:10px}
+.hero h1{font-family:var(--font-display);font-weight:400;font-size:clamp(30px,8vw,42px);text-transform:uppercase;line-height:1.05;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:var(--tealL)}
+.hero p{font-size:15px;color:rgba(255,255,255,.75);max-width:46ch;margin:0 auto}
+
+.progresswrap{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;padding:10px 20px}
+.progressbar{max-width:640px;margin:0 auto;height:5px;background:var(--line);border-radius:99px;overflow:hidden}
+.progressbar i{display:block;height:100%;width:16.6%;background:linear-gradient(90deg,var(--teal),var(--tealL));border-radius:99px;transition:width .4s ease}
+
+section.card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:26px 22px;margin-top:22px;box-shadow:0 2px 10px rgba(0,33,71,.04)}
+.eyebrow{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:8px}
+h2{font-family:var(--font-display);font-weight:400;font-size:22px;text-transform:uppercase;color:var(--navy);margin-bottom:12px;letter-spacing:.3px}
+p{font-size:15px;color:var(--ink)}
+p.muted{color:var(--slate);font-size:14px}
+
+.step-row{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.step-btn{display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:15px 16px;cursor:pointer;font-family:var(--font-body);transition:border-color .2s}
+.step-btn:hover{border-color:var(--tealL)}
+.step-btn.open{border-color:var(--teal);background:var(--tealPale)}
+.step-num{width:28px;height:28px;flex:none;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:13px}
+.step-body strong{display:block;font-size:15px;margin-bottom:2px;color:var(--navy)}
+.step-detail{display:none;font-size:13.5px;color:var(--slate);margin-top:6px;line-height:1.55}
+.step-btn.open .step-detail{display:block}
+
+.tool-box{background:var(--navy);border-radius:16px;padding:26px 22px;margin-top:18px;text-align:center;color:#fff}
+.count-circle{width:150px;height:150px;border-radius:50%;border:3px solid var(--tealL);margin:18px auto;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:44px;transition:transform 1s ease, border-color 1s ease}
+.count-circle.inhale{transform:scale(1.12);border-color:var(--tealL)}
+.count-circle.exhale{transform:scale(.9);border-color:var(--copper)}
+.count-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:6px}
+.bigbtn{display:inline-flex;align-items:center;gap:9px;font-size:13px;letter-spacing:1.2px;text-transform:uppercase;font-weight:800;background:var(--copper);color:#fff;border:none;border-radius:99px;padding:15px 28px;cursor:pointer;margin-top:10px}
+.bigbtn:hover{filter:brightness(1.08)}
+.bigbtn:disabled{opacity:.5;cursor:default}
+
+textarea{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:14.5px;resize:vertical;margin-top:12px}
+.savebar{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.savebtn{font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:700;background:var(--teal);color:#fff;border:none;border-radius:99px;padding:11px 20px;cursor:pointer}
+.savedtag{font-size:12.5px;color:var(--teal);font-weight:700;display:none}
+.savedtag.show{display:inline}
+
+.cta-block{background:var(--navy);border-radius:18px;padding:32px 22px;margin-top:28px;text-align:center;color:#fff}
+.cta-block h2{color:#fff;font-size:24px}
+.cta-block p{color:rgba(255,255,255,.72);font-size:14.5px;max-width:44ch;margin:0 auto 20px}
+.cta-links{display:flex;flex-direction:column;gap:12px;max-width:340px;margin:0 auto}
+.cta-links a{display:block;font-size:13px;letter-spacing:1px;text-transform:uppercase;font-weight:800;border-radius:99px;padding:15px 20px;text-decoration:none}
+.cta-primary{background:var(--copper);color:#fff}
+.cta-secondary{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.3)}
+.cta-note{font-size:11px;color:rgba(255,255,255,.45);margin-top:14px}
+
+footer{text-align:center;padding:34px 20px 10px}
+.brandmark{font-family:var(--font-display);font-weight:400;font-size:16px;letter-spacing:.3px;color:var(--teal);text-transform:uppercase;margin-bottom:10px}
+.disclaimer{font-size:12px;color:var(--slate);max-width:48ch;margin:0 auto 8px;line-height:1.6}
+.copyright{font-size:10.5px;color:var(--slate)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">Starter Guide</div>
+  <h1>Breaking the <em>Loop</em></h1>
+  <p>A short walk through why your mind keeps replaying the same thing, and three real ways to interrupt it.</p>
+</div>
+
+<div class="progresswrap"><div class="progressbar"><i id="progFill"></i></div></div>
+
+<div class="wrap">
+
+<section class="card" id="sec1">
+  <div class="eyebrow">One</div>
+  <h2>What Rumination Is</h2>
+  <p>Rumination is a repetitive thinking pattern that keeps your mind returning to the same distressing event without ever reaching a resolution. It is not the same as reflection. Reflection moves you somewhere. Rumination keeps circling the same spot.</p>
+</section>
+
+<section class="card" id="sec2">
+  <div class="eyebrow">Two</div>
+  <h2>Why It Keeps Replaying</h2>
+  <p>Your brain treats an unresolved event like an open file it cannot close. Something about it, what it meant, what happens next, what it says about you, feels unfinished. Until that gets addressed directly, the loop keeps reopening on its own.</p>
+</section>
+
+<section class="card" id="sec3">
+  <div class="eyebrow">Three</div>
+  <h2>Notice, Distract, Regulate</h2>
+  <p class="muted">Tap each one to see what it actually looks like.</p>
+  <div class="step-row" id="stepRow">
+    <button class="step-btn" data-step="0">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Notice</strong>
+        <span>Name where you are right now, before anything else.</span>
+        <div class="step-detail">Ask yourself plainly: am I ruminating, or actually thinking this through? Naming it is what breaks the automatic pull of the loop.</div>
+      </div>
+    </button>
+    <button class="step-btn" data-step="1">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Distract</strong>
+        <span>Break the pattern, immediately or with something absorbing.</span>
+        <div class="step-detail">Leave the room, change position, turn something on, that is immediate. Or give a hobby or task your full attention, that is for when the loop keeps circling back.</div>
+      </div>
+    </button>
+    <button class="step-btn" data-step="2">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Regulate</strong>
+        <span>Bring your nervous system down enough to actually think.</span>
+        <div class="step-detail">This is where the breathing exercise below comes in. Regulation is not optional, it is what makes the next two steps possible at all.</div>
+      </div>
+    </button>
+  </div>
+</section>
+
+<section class="card" id="sec4">
+  <div class="eyebrow">Four</div>
+  <h2>Try a Regulation Technique</h2>
+  <p class="muted">Box breathing. Four counts in, four counts hold, four counts out, four counts hold. Tap start and follow the circle.</p>
+  <div class="tool-box">
+    <div class="count-circle" id="breathCircle">4</div>
+    <div class="count-label" id="breathLabel">Ready</div>
+    <button class="bigbtn" id="breathBtn" onclick="toggleBreath()">Start Breathing</button>
+  </div>
+</section>
+
+<section class="card" id="sec5">
+  <div class="eyebrow">Five</div>
+  <h2>One Journaling Exercise</h2>
+  <p>Write down the one thing on your mind right now. Just the facts, what happened, in a sentence or two. Getting it out of your head and onto the page is the point, not solving it.</p>
+  <textarea id="journalBox" rows="4" placeholder="What's replaying in your head right now?"></textarea>
+  <div class="savebar">
+    <button class="savebtn" onclick="saveJournal()">Save My Answer</button>
+    <span class="savedtag" id="savedTag">Saved to this browser</span>
+  </div>
+</section>
+
+<div class="cta-block">
+  <h2>Want the Full Version?</h2>
+  <p>This is a taste of Breaking the Loop. The full course walks you through understanding why it happened, deciding what to do about it, and leaving able to navigate it, whatever comes next.</p>
+  <div class="cta-links">
+    <a class="cta-primary" href="https://www.skool.com/fearless-workplace-9442/about" target="_blank" rel="noopener">Join Us in Skool</a>
+    <a class="cta-secondary" href="https://www.skool.com/fearless-workplace-9442/about" target="_blank" rel="noopener">Breaking the Loop, Live August 2026</a>
+  </div>
+  <p class="cta-note">Course details and updates are posted inside Skool. This second link currently points to the same place, swap it for a dedicated signup page once one exists.</p>
+</div>
+
+</div>
+
+<footer>
+  <div class="brandmark">Fearless Workplace&trade;</div>
+  <p class="disclaimer">This guide is provided for educational and informational purposes only. It is a coaching support resource and is not a substitute for therapy, counseling, or professional mental health treatment. If you are experiencing persistent distress, please reach out to a licensed mental health professional.</p>
+  <p class="disclaimer">Your journal answer is saved in this browser only. Nothing is sent anywhere.</p>
+  <p class="copyright">&copy; 2026 Fearless Workplace&trade;, a brand of Vertical Edge Group LLC. All rights reserved.</p>
+</footer>
+
+<script>
+const SECTIONS=['sec1','sec2','sec3','sec4','sec5'];
+function updateProgress(){
+  let seen=0;
+  SECTIONS.forEach(id=>{
+    const el=document.getElementById(id);
+    const r=el.getBoundingClientRect();
+    if(r.top < window.innerHeight*0.6) seen++;
+  });
+  const pct=Math.max(16.6,(seen/SECTIONS.length)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+}
+window.addEventListener('scroll',updateProgress);
+updateProgress();
+
+document.querySelectorAll('.step-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>btn.classList.toggle('open'));
+});
+
+let breathTimer=null, breathPhase=0, breathCount=4;
+const PHASES=[{label:'Breathe In',cls:'inhale'},{label:'Hold',cls:''},{label:'Breathe Out',cls:'exhale'},{label:'Hold',cls:''}];
+function toggleBreath(){
+  const btn=document.getElementById('breathBtn');
+  if(breathTimer){
+    clearInterval(breathTimer);
+    breathTimer=null;
+    btn.textContent='Start Breathing';
+    document.getElementById('breathCircle').className='count-circle';
+    document.getElementById('breathCircle').textContent='4';
+    document.getElementById('breathLabel').textContent='Ready';
+    return;
+  }
+  btn.textContent='Stop';
+  breathPhase=0; breathCount=4;
+  runBreathTick();
+  breathTimer=setInterval(runBreathTick,1000);
+}
+function runBreathTick(){
+  const circle=document.getElementById('breathCircle');
+  const label=document.getElementById('breathLabel');
+  circle.textContent=breathCount;
+  circle.className='count-circle '+PHASES[breathPhase].cls;
+  label.textContent=PHASES[breathPhase].label;
+  breathCount--;
+  if(breathCount<0){
+    breathPhase=(breathPhase+1)%4;
+    breathCount=4;
+  }
+}
+
+function saveJournal(){
+  const val=document.getElementById('journalBox').value;
+  try{localStorage.setItem('starterGuideJournal',val);}catch(e){}
+  const tag=document.getElementById('savedTag');
+  tag.classList.add('show');
+  setTimeout(()=>tag.classList.remove('show'),2500);
+}
+(function(){
+  try{
+    const saved=localStorage.getItem('starterGuideJournal');
+    if(saved)document.getElementById('journalBox').value=saved;
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
